@@ -49,14 +49,20 @@ The container consists of a header, the metadata, and the model, raw, as .ckpt i
 The header must ensure that there is enough space allocated to store the metadata, as well as allow any edits that authors may want to perform, without needing
 to move the model.
 
+The suggested format for the metadata is JSON, as it provides a structured format. 
+
 # Proposed Format
 
-| Offset     | Size     | Description                        |
-|------------|----------|------------------------------------|
-| 0000       | 4 B      | 'D''F''S''N' - Magic               |
-| 0004       | 2 B      | Type  01 - CKPT, 02 - Saftensors   |
-| 0006       | 4 B      | Offset to metadata from BOF        |
-| 000A       | 4 B      | Offset to model from BOF           |
-| 1000       | 2 MB     | Metadata                           |
-| ????       | ? GB     | Model                              |
+The following header describes a container with 2MB of space reserved for metadata
+
+
+| Offset     | Size     | Description                            |
+|------------|----------|----------------------------------------|
+| 0000       | 4 B      | 'D''F''S''N' - Magic                   |
+| 0004       | 2 B      | Type 01 - CKPT, 02 - Safetensors       |
+| 0006       | 32 B     | SHA256 of Model                        |
+| 0026       | 4 B      | 00000100 - Offset to metadata from BOF |
+| 002A       | 4 B      | 00200100 - Offset to model from BOF    |
+| 0100       | 2 MB     | Metadata - JSON - UTF8                 |
+| 200100     | ? GB     | Model                                  |
 
